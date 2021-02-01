@@ -50,15 +50,18 @@ namespace solusek
 				break;
 			Hold = true;
 			t = time(0);
-			for(std::vector<IDatabaseInstance*>::iterator it = Instances.begin(); it != Instances.end(); ++it)
+			std::vector<IDatabaseInstance*>::iterator it = Instances.begin();
+			while(it != Instances.end())
 			{
 				if(!((CDatabaseInstance*)(*it))->inUse() && time(0) - ((CDatabaseInstance*)(*it))->getT() > ExpireSeconds)
 				{
+					CDatabaseInstance *i = (CDatabaseInstance*)(*it);
+					fprintf(stdout, "DB Pool: Expired: %lu\n", i->getID());
+					delete i;
 					Instances.erase(it);
-					fprintf(stdout, "DB Pool: Expired: %lu\n", ((CDatabaseInstance*)(*it))->getID());
-					delete (*it);
-					break;
 				}
+				else
+					it++;
 			}
 			Hold = false;
 			sleep(1);
@@ -84,8 +87,10 @@ namespace solusek
 		di = getUnusedInstance(ConnectionString);
 		Hold = false;
 		if(!di)
+		{
 			di = new CDatabaseInstance(this, ConnectionString);
-		Instances.push_back(di);
+			Instances.push_back(di);
+		}
 		return di;
 	}
 
