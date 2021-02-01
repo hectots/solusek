@@ -109,11 +109,11 @@ CDatabaseResource *CDatabaseTransaction::insert(const std::string &s, const std:
 	if(mysql_real_query(C, s.c_str(), s.size()) == 0)
 	{
 			MYSQL_RES *res = mysql_store_result(C);
-			if(!res)
+			if(res)
 			{
 				unsigned long int iid = mysql_insert_id(C);
 				char buf[64];
-				sprintf(buf, "%lu", iid);
+				snprintf(buf, 64, "%lu", iid);
 				CDatabaseResource *r = new CDatabaseResource(res, buf);
 				return r;
 			}
@@ -128,11 +128,13 @@ bool CDatabaseTransaction::query(const std::string &s, void(*callback)(const DBR
 {
 	if(mysql_real_query(C, s.c_str(), s.size()) == 0)
  	{
- 			MYSQL_RES *res = mysql_store_result(C);
- 			if(!res)
- 			{
-				MYSQL_ROW row;
-				unsigned long int *lengths = mysql_fetch_lengths(res);
+		MYSQL_RES *res = mysql_store_result(C);
+		if(res)
+		{
+			MYSQL_ROW row;
+			unsigned long int *lengths = mysql_fetch_lengths(res);
+			if(lengths)
+			{
 				while(row = mysql_fetch_row(res))
 				{
 					DBROW result;
@@ -144,10 +146,11 @@ bool CDatabaseTransaction::query(const std::string &s, void(*callback)(const DBR
 							result.push_back("");
 					}
 					if(callback)
-				  	callback(result, param);
+					callback(result, param);
 				}
- 				return true;
- 			}
+				return true;
+			}
+		}
  	}
 	return false;
 }
@@ -157,7 +160,7 @@ CDatabaseResource *CDatabaseTransaction::queryOne(const std::string &s)
 	if(mysql_real_query(C, s.c_str(), s.size()) == 0)
 	{
 			MYSQL_RES *res = mysql_store_result(C);
-			if(!res)
+			if(res)
 			{
 				MYSQL_ROW row = mysql_fetch_row(res);
 				if(row)
