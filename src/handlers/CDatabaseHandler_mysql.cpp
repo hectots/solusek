@@ -119,7 +119,8 @@ CDatabaseResource *CDatabaseTransaction::insert(const std::string &s, const std:
 			return r;
 		}
 	}
-	fprintf(stderr, "QUERY ERROR: %s\n", s.c_str());
+	else
+		fprintf(stderr, "QUERY ERROR: %s\n", s.c_str());
 	return new CDatabaseResource(0);
 }
 
@@ -152,7 +153,8 @@ bool CDatabaseTransaction::query(const std::string &s, void(*callback)(const DBR
 			
 		}
  	}
-	fprintf(stderr, "QUERY ERROR: %s\n", s.c_str());
+	else
+		fprintf(stderr, "QUERY ERROR: %s\n", s.c_str());
 	return false;
 }
 
@@ -184,7 +186,8 @@ CDatabaseResource *CDatabaseTransaction::queryOne(const std::string &s)
 			}
 		}
 	}
-	fprintf(stderr, "QUERY ERROR: %s\n", s.c_str());
+	else
+		fprintf(stderr, "QUERY ERROR: %s\n", s.c_str());
 	return new CDatabaseResource(0);
 }
 
