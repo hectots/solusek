@@ -26,17 +26,15 @@ namespace solusek
 				acc += ",";
 			if(vals.size() > 0)
 				vals += ",";
-			acc += "\"";
 			acc += it->first;
-			acc += "\"";
 			vals += "'";
 			vals += esc(it->second);
 			vals += "'";
 		}
 
-		std::string builder("INSERT INTO \"");
+		std::string builder("INSERT INTO ");
 		builder += tableName;
-		builder += "\" (";
+		builder += " (";
 		builder += acc;
 		builder += ") VALUES (";
 		builder += vals;
@@ -56,9 +54,8 @@ namespace solusek
 		{
 			if(acc.size() > 0)
 				acc += ",";
-			acc += "\"";
 			acc += it->first;
-			acc += "\"='";
+			acc += "='";
 			acc += it->second;
 			acc += "'";
 		}
@@ -66,16 +63,15 @@ namespace solusek
 		{
 			if(vals.size() > 0)
 				vals += ",";
-			vals += "\"";
 			vals += it->first;
-			vals += "\"='";
+			vals += "='";
 			vals += esc(it->second);
 			vals += "'";
 		}
 
-		std::string builder("UPDATE \"");
+		std::string builder("UPDATE ");
 		builder += tableName;
-		builder += "\" SET ";
+		builder += " SET ";
 		builder += vals;
 		builder += " WHERE ";
 		builder += acc;
@@ -91,24 +87,20 @@ namespace solusek
 		{
 			if(q.size() > 0)
 				q += ",";
-			q += "\"";
 			q += (*it);
-			q += "\"";
 		}
 		for(std::map<std::string,std::string>::iterator it = vars.begin(); it != vars.end(); ++it)
 		{
 			if(acc.size() > 0)
 				acc += ",";
-			acc += "\"";
 			acc += it->first;
-			acc += "\"='";
+			acc += "='";
 			acc += esc(it->second);
 			acc += "'";
 		}
 
-		std::string builder("SELECT " + q + " FROM \"");
+		std::string builder("SELECT " + q + " FROM ");
 		builder += tableName;
-		builder += "\"";
 		if(vars.size() > 0)
 		{
 			builder += " WHERE ";
@@ -144,24 +136,20 @@ namespace solusek
 		{
 			if(q.size() > 0)
 				q += ",";
-			q += "\"";
 			q += (*it);
-			q += "\"";
 		}
 		for(std::map<std::string,std::string>::iterator it = vars.begin(); it != vars.end(); ++it)
 		{
 			if(acc.size() > 0)
 				acc += ",";
-			acc += "\"";
 			acc += it->first;
-			acc += "\"='";
+			acc += "='";
 			acc += esc(it->second);
 			acc += "'";
 		}
 
-		std::string builder("SELECT " + q + " FROM \"");
+		std::string builder("SELECT " + q + " FROM ");
 		builder += tableName;
-		builder += "\"";
 		if(vars.size() > 0)
 		{
 			builder += " WHERE ";
