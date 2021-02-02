@@ -7,3 +7,4 @@ sample-server/sample-server.project
 cmake-build-Debug/
 build-sample-server/
 build/
+.vscode/

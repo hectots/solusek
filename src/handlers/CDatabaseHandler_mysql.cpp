@@ -108,17 +108,18 @@ CDatabaseResource *CDatabaseTransaction::insert(const std::string &s, const std:
 {
 	if(mysql_real_query(C, s.c_str(), s.size()) == 0)
 	{
-			MYSQL_RES *res = mysql_store_result(C);
-			if(res)
-			{
-				unsigned long int iid = mysql_insert_id(C);
-				char buf[64];
-				snprintf(buf, 64, "%lu", iid);
-				CDatabaseResource *r = new CDatabaseResource(res, buf);
-				return r;
-			}
+		MYSQL_RES *res = mysql_store_result(C);
+		if(res)
+		{
+			unsigned long int iid = mysql_insert_id(C);
+			char buf[64];
+			snprintf(buf, 64, "%lu", iid);
+			CDatabaseResource *r = new CDatabaseResource(res, buf);
+			mysql_free_result(res);
+			return r;
+		}
 	}
-
+	fprintf(stderr, "QUERY ERROR: %s\n", s.c_str());
 	return new CDatabaseResource(0);
 }
 
@@ -132,26 +133,26 @@ bool CDatabaseTransaction::query(const std::string &s, void(*callback)(const DBR
 		if(res)
 		{
 			MYSQL_ROW row;
-			unsigned long int *lengths = mysql_fetch_lengths(res);
-			if(lengths)
+			unsigned int lengths = mysql_num_fields(res);
+			while(row = mysql_fetch_row(res))
 			{
-				while(row = mysql_fetch_row(res))
+				DBROW result;
+				for(int n = 0; n < lengths; n++)
 				{
-					DBROW result;
-					for(int n = 0; n < *lengths; n++)
-					{
-						if(row[n])
-							result.push_back(row[n]);
-						else
-							result.push_back("");
-					}
-					if(callback)
-					callback(result, param);
+					if(row[n])
+						result.push_back(row[n]);
+					else
+						result.push_back("");
 				}
-				return true;
+				if(callback)
+					callback(result, param);
 			}
+			mysql_free_result(res);
+			return true;
+			
 		}
  	}
+	fprintf(stderr, "QUERY ERROR: %s\n", s.c_str());
 	return false;
 }
 
@@ -159,30 +160,31 @@ CDatabaseResource *CDatabaseTransaction::queryOne(const std::string &s)
 {
 	if(mysql_real_query(C, s.c_str(), s.size()) == 0)
 	{
-			MYSQL_RES *res = mysql_store_result(C);
-			if(res)
+		MYSQL_RES *res = mysql_store_result(C);
+		if(res)
+		{
+			MYSQL_ROW row = mysql_fetch_row(res);
+			if(row)
 			{
-				MYSQL_ROW row = mysql_fetch_row(res);
-				if(row)
+				DBROW rr;
+				unsigned int lengths = mysql_num_fields(res);
+				for(int n = 0; n < lengths; n++)
 				{
-					DBROW rr;
-					unsigned long int *lengths = mysql_fetch_lengths(res);
-					for(int n = 0; n < *lengths; n++)
-					{
-						if(row[n])
-							rr.push_back(row[n]);
-						else
-							rr.push_back("");
-					}
-					std::vector<DBROW> rows;
-					rows.push_back(rr);
-					CDatabaseResource *r = new CDatabaseResource(0, row[0]);
-					r->setData(rows);
-					mysql_free_result(res);
-					return r;
+					if(row[n])
+						rr.push_back(row[n]);
+					else
+						rr.push_back("");
 				}
+				std::vector<DBROW> rows;
+				rows.push_back(rr);
+				CDatabaseResource *r = new CDatabaseResource(0, row[0]);
+				r->setData(rows);
+				mysql_free_result(res);
+				return r;
 			}
+		}
 	}
+	fprintf(stderr, "QUERY ERROR: %s\n", s.c_str());
 	return new CDatabaseResource(0);
 }
 
