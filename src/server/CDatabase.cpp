@@ -89,6 +89,8 @@ namespace solusek
 		if(!di)
 		{
 			di = new CDatabaseInstance(this, ConnectionString);
+			if(!di->isConnected())
+				throw std::runtime_error("Failed to open connection to database.");
 			Instances.push_back(di);
 		}
 		return di;
