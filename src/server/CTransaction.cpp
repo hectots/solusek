@@ -53,7 +53,7 @@ namespace solusek
 		for(std::map<std::string,std::string>::iterator it = find.begin(); it != find.end(); ++it)
 		{
 			if(acc.size() > 0)
-				acc += ",";
+				acc += " AND ";
 			acc += it->first;
 			acc += "='";
 			acc += it->second;
@@ -76,7 +76,6 @@ namespace solusek
 		builder += " WHERE ";
 		builder += acc;
 
-
 		return T->query(builder,0);
 	}
 
@@ -92,7 +91,7 @@ namespace solusek
 		for(std::map<std::string,std::string>::iterator it = vars.begin(); it != vars.end(); ++it)
 		{
 			if(acc.size() > 0)
-				acc += ",";
+				acc += " AND ";
 			acc += it->first;
 			acc += "='";
 			acc += esc(it->second);
@@ -141,7 +140,7 @@ namespace solusek
 		for(std::map<std::string,std::string>::iterator it = vars.begin(); it != vars.end(); ++it)
 		{
 			if(acc.size() > 0)
-				acc += ",";
+				acc += " AND ";
 			acc += it->first;
 			acc += "='";
 			acc += esc(it->second);
