@@ -342,15 +342,21 @@ namespace solusek
 
 				}
 
+				if(Verbose)
+					fprintf(stdout, "Read header!\n");
+
 				if(headers["content-type"].size() > 0)
 				{
 					contentType = headers["content-type"];
+					if(Verbose)
+						fprintf(stdout, "Content type: %s\n", contentType.c_str());
 				}
 
 				if(headers["content-length"].size() > 0)
 				{
 					int clen = atoi(headers["content-length"].c_str());
-
+					if(Verbose)
+						fprintf(stdout, "Content length: %i\n", clen);
 					int r = 0;
 					for(unsigned int n = 0; n < clen; n++)
 					{
