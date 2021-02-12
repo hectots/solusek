@@ -23,9 +23,7 @@ CNetHandlerSocket* CNetHandler::createSocket(bool ssl)
 	return new CNetHandlerSocket(0, ssl);
 }
 
-#ifdef USE_OPENSSL
 CNetHandlerSocket::CNetHandlerSocket(int sid, bool ssl, bool sslMutual, SSL_CTX* ctx, SSL* _ssl, const char* ipaddr)
-#endif
 {
 	Timeout = 0;
 	_SSL = _ssl;
@@ -181,9 +179,7 @@ int CNetHandlerSocket::readBuffer(void* buf, int len)
 {
 	int r;
 	if(SSLEnabled)
-#ifdef USE_OPENSSL
 		r = ::SSL_read(_SSL, (char*)buf, len);
-#endif
 	else
 		r = ::recv(SID, (char *)buf, len, 0);
 	if(ThrowExceptions && r < 1)
@@ -221,9 +217,7 @@ bool CNetHandlerSocket::writeBuffer(const void* buf, int len)
 {
 	int r = 0;
 	if(SSLEnabled)
-#ifdef USE_OPENSSL
 		r = ::SSL_write(_SSL, (const char*)buf, len);
-#endif
 	else
 		r = ::send(SID, (const char*) buf, len, MSG_NOSIGNAL);
 

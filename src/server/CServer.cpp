@@ -41,6 +41,7 @@ namespace solusek
 		ListenPort = 80;
 		ThreadLimit = EDTAPI_DEFAULT_THREAD_LIMIT;
 		ThreadCount = 0;
+		Secure = false;
 		addDefaultMimeTypes();
 	}
 
@@ -58,13 +59,10 @@ namespace solusek
 			delete (*it);
 		if (Database)
 			delete Database;
-#ifdef USE_OPENSSL
-		//FIPS_mode_set(0);
 		EVP_cleanup();
 		CRYPTO_cleanup_all_ex_data();
 		ERR_free_strings();
-		//OPENSSL_cleanup();
-#endif
+		OPENSSL_cleanup();
 	}
 
 	void CServer::addDefaultMimeTypes()

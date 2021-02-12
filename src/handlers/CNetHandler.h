@@ -23,11 +23,9 @@
 #	define SOCKET_ERROR -1
 #endif
 
-#ifdef USE_OPENSSL
 #include <openssl/crypto.h>
 #include <openssl/ssl.h>
 #include <openssl/err.h>
-#endif
 
 static bool CNetHandler_SSLInitialized = false;
 
@@ -46,13 +44,11 @@ class CNetHandlerSocket : public solusek::INetHandlerSocket
 private:
 	int				SID;
 	bool			Ready, SSLEnabled, SSLMutual, ThrowExceptions;
-#ifdef USE_OPENSSL
 	SSL_CTX			*CTX;
 	SSL_CTX     *ChildCTX;
 	SSL				*_SSL;
 	SSL_METHOD		*Method;
 	X509			*ClientCertificate;
-#endif
 	std::string		CertificateFileName, PrivateKeyFileName, CertificatePassword, ClientCAFileName;
 
 	void setupSSL(bool re = false);
@@ -84,9 +80,7 @@ public:
 	void setCTX(void *ctx);
 	void setChildCTX(void *ctx);
 
-#ifdef USE_OPENSSL
 	CNetHandlerSocket(int sid = 0, bool ssl = false, bool sslMutual = false, SSL_CTX* ctx = 0, SSL* _ssl = 0, const char* ipaddr = 0);
-#endif
 	~CNetHandlerSocket();
 
 	bool isReady() { return Ready; }
