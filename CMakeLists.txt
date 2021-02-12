@@ -10,8 +10,9 @@ project(${PROJECT_NAME})
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 if(DEBUG)
   add_compile_options(-fPIC -g -w -std=c++11)
-else
+else()
   add_compile_options(-fPIC -O2 -w -std=c++11)
+endif()
 add_definitions(-DUSE_OPENSSL)
 
 if(USE_MYSQL)
