@@ -96,16 +96,22 @@ void CDatabaseHandler::close()
 
 CDatabaseTransaction *CDatabaseHandler::begin()
 {
+	if(!C)
+		throw std::runtime_error("Not connected.");
 	return new CDatabaseTransaction(C);
 }
 
 int CDatabaseTransaction::exec(const std::string &s)
 {
+	if(!C)
+		throw std::runtime_error("Not connected.");
 	return mysql_real_query(C, s.c_str(), s.size());
 }
 
 CDatabaseResource *CDatabaseTransaction::insert(const std::string &s, const std::string &idField)
 {
+	if(!C)
+		throw std::runtime_error("Not connected.");
 	if(mysql_real_query(C, s.c_str(), s.size()) == 0)
 	{
 		MYSQL_RES *res = mysql_store_result(C);
@@ -128,6 +134,8 @@ CDatabaseResource *CDatabaseTransaction::insert(const std::string &s, const std:
 
 bool CDatabaseTransaction::query(const std::string &s, void(*callback)(const DBROW &, void *), void *param)
 {
+	if(!C)
+		throw std::runtime_error("Not connected.");
 	if(mysql_real_query(C, s.c_str(), s.size()) == 0)
  	{
 		MYSQL_RES *res = mysql_store_result(C);
@@ -160,6 +168,8 @@ bool CDatabaseTransaction::query(const std::string &s, void(*callback)(const DBR
 
 CDatabaseResource *CDatabaseTransaction::queryOne(const std::string &s)
 {
+	if(!C)
+		throw std::runtime_error("Not connected.");
 	if(mysql_real_query(C, s.c_str(), s.size()) == 0)
 	{
 		MYSQL_RES *res = mysql_store_result(C);
@@ -193,16 +203,27 @@ CDatabaseResource *CDatabaseTransaction::queryOne(const std::string &s)
 
 std::string CDatabaseTransaction::esc(const std::string s)
 {
-	char buf[(s.size()*2)+1];
+	if(!C)
+		throw std::runtime_error("Not connected.");
+	char *buf = new char[(s.size()*2)+1];
 	mysql_real_escape_string(C, buf, s.c_str(), s.size());
-	return std::string(buf);
+    std::string r(buf);
+	delete[] buf;
+	return r;
 }
 
 std::string CDatabaseHandler::esc(CDatabaseTransaction *t, const std::string s)
 {
-	char buf[(s.size()*2)+1];
+	if(!C)
+		throw std::runtime_error("Not connected.");
+	if(!t)
+		throw std::runtime_error("Transaction not allocated.");
+
+	char *buf = new char[(s.size()*2)+1];
 	mysql_real_escape_string(C, buf, s.c_str(), s.size());
-	return std::string(buf);
+	std::string r(buf);
+	delete[] buf;
+	return r;
 }
 
 #endif
