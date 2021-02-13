@@ -18,7 +18,7 @@
 #include "CSession.h"
 #include <vector>
 
-#define EDTAPI_DEFAULT_THREAD_LIMIT 25
+#define SOLUSEK_DEFAULT_THREAD_LIMIT 25
 
 namespace solusek
 {
@@ -84,7 +84,7 @@ namespace solusek
 
 		static THREADFUNC thread_runNode(void *param);
 
-		void runNode(int id, CNetHandlerSocket *socket);
+		void runNode(pthread_t id, CNetHandlerSocket *socket);
 
 		virtual void setListenPort(int port) { ListenPort = port; }
 

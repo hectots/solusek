@@ -19,7 +19,7 @@ namespace solusek
 	class CNode
 	{
 	private:
-		unsigned int ID;
+		pthread_t ID;
 		void *Server;
 		CNetHandlerSocket *Socket;
 		std::vector<CVarVal*> Headers;
@@ -29,7 +29,7 @@ namespace solusek
 		CNode(unsigned int id, void *server, CNetHandlerSocket *socket);
 		~CNode();
 
-		int getID() { return ID; }
+		pthread_t getID() { return ID; }
 
 		void run();
 

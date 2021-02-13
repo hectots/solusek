@@ -160,11 +160,9 @@ public:
 	{
 		if(!CNetHandler_SSLInitialized)
 		{
-#ifdef USE_OPENSSL
             SSL_library_init();
             SSL_load_error_strings();
             OpenSSL_add_all_algorithms();
-#endif
             CNetHandler_SSLInitialized = true;
 		}
 	}

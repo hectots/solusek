@@ -29,6 +29,7 @@ namespace solusek
 	{
 		closeAll();
 		Running = false;
+		Hold = false;
 		pthread_join(TID, 0);
 	}
 
@@ -101,11 +102,11 @@ namespace solusek
 		while(Hold)
 			usleep(1);
 		Hold = true;
-		for(std::vector<IDatabaseInstance*>::iterator it = Instances.begin(); it != Instances.end(); ++it)
+		while(!Instances.empty())
 		{
-			delete (*it);
+			delete (CDatabaseInstance*)Instances.back();
+			Instances.pop_back();
 		}
-		Instances.clear();
 		Hold = false;
 	}
 

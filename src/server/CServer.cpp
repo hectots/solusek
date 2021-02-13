@@ -21,7 +21,7 @@ namespace solusek
 	{
 		CServer *Server;
 		CNetHandlerSocket *Socket;
-		unsigned int ID;
+		pthread_t ID;
 	};
 
 	std::string getFileModTime(const std::string &path)
@@ -39,7 +39,7 @@ namespace solusek
 		Database = new CDatabase();
 		MainSocket = 0;
 		ListenPort = 80;
-		ThreadLimit = EDTAPI_DEFAULT_THREAD_LIMIT;
+		ThreadLimit = SOLUSEK_DEFAULT_THREAD_LIMIT;
 		ThreadCount = 0;
 		Secure = false;
 		addDefaultMimeTypes();
@@ -49,19 +49,33 @@ namespace solusek
 	{
 		if (Config)
 			delete Config;
-		for (std::vector<CNode *>::iterator it = Nodes.begin(); it != Nodes.end(); ++it)
-			delete (*it);
-		for (std::vector<MEndpoint *>::iterator it = Endpoints.begin(); it != Endpoints.end(); ++it)
-			delete (*it);
-		for (std::vector<CSession *>::iterator it = Sessions.begin(); it != Sessions.end(); ++it)
-			delete (*it);
-		for (std::vector<MStaticEndpoint *>::iterator it = StaticEndpoints.begin(); it != StaticEndpoints.end(); ++it)
-			delete (*it);
+		if(!Nodes.empty())
+		{
+			for (std::vector<CNode *>::iterator it = Nodes.begin(); it != Nodes.end(); ++it)
+			{
+				pthread_join((*it)->getID(), 0);
+				delete (*it);
+			}
+			Nodes.clear();
+		}
+		while(!Endpoints.empty())
+		{
+			delete Endpoints.back();
+			Endpoints.pop_back();
+		}
+		Endpoints.clear();
+		while(!Sessions.empty())
+		{
+			delete Sessions.back();
+			Sessions.pop_back();
+		}
+		while(!StaticEndpoints.empty())
+		{
+			delete StaticEndpoints.back();
+			StaticEndpoints.pop_back();
+		}
 		if (Database)
 			delete Database;
-		EVP_cleanup();
-		CRYPTO_cleanup_all_ex_data();
-		ERR_free_strings();
 		OPENSSL_cleanup();
 	}
 
@@ -82,7 +96,7 @@ namespace solusek
 
 	void CServer::dispose()
 	{
-		delete this;
+		delete ((CServer*)this);
 	}
 
 	IDatabase *CServer::getDatabase()
@@ -208,9 +222,10 @@ namespace solusek
 		return 0;
 	}
 
-	void CServer::runNode(int id, CNetHandlerSocket *socket)
+	void CServer::runNode(pthread_t id, CNetHandlerSocket *socket)
 	{
 		Log.print("Running node...\n");
+		Log.print("Thread ID: " + std::to_string(id) + "\n");
 		CNode *node = new CNode(id, this, socket);
 		Nodes.push_back(node);
 		node->run();
@@ -221,7 +236,7 @@ namespace solusek
 	{
 		for (std::vector<CNode *>::iterator it = Nodes.begin(); it != Nodes.end(); ++it)
 		{
-			if ((*it)->getID() == node->getID())
+			if ((*it) == node)
 			{
 				Nodes.erase(it);
 				return;

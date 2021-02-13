@@ -33,7 +33,7 @@ void CDatabaseTransaction::commit()
 {
 }
 
-CDatabaseHandler::CDatabaseHandler()
+CDatabaseHandler::CDatabaseHandler() : C(0)
 {
 }
 

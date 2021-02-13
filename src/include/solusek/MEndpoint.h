@@ -24,7 +24,7 @@ namespace solusek
             Type = 0;
             ContentType = "application/json";
 		}
-    int Type;
+    	int Type;
 		std::string Path, Method, Contents, Ext, ContentType, Date;
 		MResponse(*Callback)(const void*, MRequest&);
 	};
