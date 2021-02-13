@@ -49,14 +49,12 @@ namespace solusek
 	{
 		if (Config)
 			delete Config;
-		if(!Nodes.empty())
+		while(!Nodes.empty())
 		{
-			for (std::vector<CNode *>::iterator it = Nodes.begin(); it != Nodes.end(); ++it)
-			{
-				pthread_join((*it)->getID(), 0);
-				delete (*it);
-			}
-			Nodes.clear();
+			CNode* node = Nodes.back();
+			Nodes.pop_back();
+			pthread_join(node->getID(),0);
+			delete node;
 		}
 		while(!Endpoints.empty())
 		{
@@ -96,7 +94,7 @@ namespace solusek
 
 	void CServer::dispose()
 	{
-		delete ((CServer*)this);
+		delete this;
 	}
 
 	IDatabase *CServer::getDatabase()
