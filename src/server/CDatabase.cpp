@@ -9,6 +9,7 @@
 #include "CDatabaseInstance.h"
 #include <unistd.h>
 #include <pthread.h>
+#include <stdexcept>
 
 namespace solusek
 {
