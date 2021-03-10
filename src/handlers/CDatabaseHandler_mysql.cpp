@@ -157,8 +157,7 @@ bool CDatabaseTransaction::query(const std::string &s, void(*callback)(const DBR
 					callback(result, param);
 			}
 			mysql_free_result(res);
-			return true;
-			
+			return true;			
 		}
  	}
 	else
@@ -194,6 +193,7 @@ CDatabaseResource *CDatabaseTransaction::queryOne(const std::string &s)
 				mysql_free_result(res);
 				return r;
 			}
+			mysql_free_result(res);
 		}
 	}
 	else

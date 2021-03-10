@@ -237,7 +237,8 @@ namespace solusek
 		while(Lock)
 			usleep(1);
 		Lock = true;
-		return T->esc(esc);
+		std::string r = T->esc(esc);
 		Lock = false;
+		return r;
 	}
 }
