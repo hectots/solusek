@@ -234,6 +234,10 @@ namespace solusek
 
 	std::string CTransaction::esc(const std::string esc)
 	{
+		while(Lock)
+			usleep(1);
+		Lock = true;
 		return T->esc(esc);
+		Lock = false;
 	}
 }
