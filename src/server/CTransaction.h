@@ -21,6 +21,8 @@ namespace solusek
 
 		std::vector<MDatabaseHandle*> Handles;
 
+		static bool Lock;
+
 	public:
 		CTransaction(void *h, CDatabaseTransaction *t) : T(t) {}
 		~CTransaction();
