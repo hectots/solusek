@@ -7,9 +7,13 @@
 #include "CTransaction.h"
 #include "../include/solusek/string_util.h"
 #include "CDatabaseHandle.h"
+#include <unistd.h>
 
 namespace solusek
 {
+	bool CTransaction::Lock = false;
+
+
 	CTransaction::~CTransaction()
 	{
 		cleanup();
@@ -40,8 +44,11 @@ namespace solusek
 		builder += vals;
 		builder += ")";
 
-
+		while(Lock)
+			usleep(1);
+		Lock = true;
 		MDatabaseHandle *r = new CDatabaseHandle(T->insert(builder, "id"));
+		Lock = false;
 		Handles.push_back(r);
 		return r;
 	}
@@ -76,7 +83,12 @@ namespace solusek
 		builder += " WHERE ";
 		builder += acc;
 
-		return T->query(builder,0);
+		while(Lock)
+			usleep(1);
+		Lock = true;
+		bool r = T->query(builder,0);
+		Lock = false;
+		return r;
 	}
 
 	MDatabaseHandle *CTransaction::selectOne(const char *tableName, std::vector<std::string> find, std::map<std::string, std::string> vars, const std::string &sort)
@@ -112,7 +124,11 @@ namespace solusek
 		}
 		builder += " LIMIT 1";
 
+		while(Lock)
+			usleep(1);
+		Lock = true;
 		MDatabaseHandle *r = new CDatabaseHandle(T->queryOne(builder));
+		Lock = false;
 		Handles.push_back(r);
 		return r;
 	}
@@ -121,7 +137,11 @@ namespace solusek
 	{
 		CDatabaseResource* rs = new CDatabaseResource(0, "");
 
+		while(Lock)
+			usleep(1);
+		Lock = true;
 		T->query(query, selectCallback, rs);
+		Lock = false;
 
 		MDatabaseHandle *r = new CDatabaseHandle(rs);
 		Handles.push_back(r);
@@ -167,9 +187,11 @@ namespace solusek
 
 
 		CDatabaseResource* rs = new CDatabaseResource(0, "");
-
+		while(Lock)
+			usleep(1);
+		Lock = true;
 		T->query(builder, selectCallback, rs);
-
+		Lock = false;
 		MDatabaseHandle *r = new CDatabaseHandle(rs);
 		Handles.push_back(r);
 		return r;
@@ -194,7 +216,11 @@ namespace solusek
 	void CTransaction::commit()
 	{
 		//T->commit();
+		while(Lock)
+			usleep(1);
+		Lock = true;
 		T->exec("commit;");
+		Lock = false;
 	}
 
 	void CTransaction::cleanup()
@@ -208,6 +234,11 @@ namespace solusek
 
 	std::string CTransaction::esc(const std::string esc)
 	{
-		return T->esc(esc);
+		while(Lock)
+			usleep(1);
+		Lock = true;
+		std::string r = T->esc(esc);
+		Lock = false;
+		return r;
 	}
 }
