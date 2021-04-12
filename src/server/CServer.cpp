@@ -371,6 +371,22 @@ namespace solusek
 					endpoint->ContentType = mime->Type;
 				}
 			}
+			else
+			{
+				FILE *file = fopen(dpath.c_str(), "rb");
+				if (!file)
+					return 0;
+				fclose(file);
+				endpoint = new MEndpoint();
+				endpoint->Date = getFileModTime(dpath);
+				endpoint->Path = dpath;
+				endpoint->Method = method;
+				endpoint->Ext = ext;
+				std::vector<unsigned char> data = readBinaryFile(dpath);
+				endpoint->Contents = std::string((const char *)&data[0], data.size());
+				endpoint->Type = 1;
+				endpoint->ContentType = "application/force-download";
+			}
 		}
 		return endpoint;
 	}
