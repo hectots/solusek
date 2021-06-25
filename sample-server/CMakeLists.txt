@@ -12,7 +12,7 @@ FILE(GLOB SRCS "${CMAKE_CURRENT_LIST_DIR}/*.cpp")
 ## Define the executable
 add_executable(${PROJECT_NAME} ${SRCS})
 
-target_link_libraries(${PROJECT_NAME} solusek)
+target_link_libraries(${PROJECT_NAME} solusek ssl crypto)
 
 if(USE_MYSQL)
     add_definitions(-DDUSE_MYSQL)
