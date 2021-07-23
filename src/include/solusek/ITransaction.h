@@ -19,6 +19,8 @@ namespace solusek
 	class ITransaction
 	{
 	public:
+		virtual int exec(const std::string &s) = 0;
+		
 		virtual MDatabaseHandle *insert(const char *tableName, std::map<std::string, std::string> vars) = 0;
 
 		virtual MDatabaseHandle *selectOne(const char *tableName, std::vector<std::string> find, std::map<std::string, std::string> vars, const std::string &sort = std::string()) = 0;

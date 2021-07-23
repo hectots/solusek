@@ -20,6 +20,17 @@ namespace solusek
 		delete T;
 	}
 
+	int CTransaction::exec(const std::string &s)
+	{
+		CDatabaseHandler *h = (CDatabaseHandler*)H;
+		while(Lock)
+			usleep(1);
+		Lock = true;
+		int r = T->exec(s);
+		Lock = false;
+		return r;
+	}
+
 	MDatabaseHandle *CTransaction::insert(const char *tableName, std::map<std::string, std::string> vars)
 	{
 		CDatabaseHandler *h = (CDatabaseHandler*)H;
