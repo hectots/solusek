@@ -126,8 +126,10 @@ CDatabaseResource *CDatabaseTransaction::insert(const std::string &s, const std:
 		}
 	}
 	else
+	{
 		fprintf(stderr, "QUERY ERROR: %s\n", s.c_str());
-	return new CDatabaseResource(0);
+		return new CDatabaseResource(s);
+	}
 }
 
 
