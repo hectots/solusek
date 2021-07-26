@@ -33,6 +33,8 @@ namespace solusek
 
 		virtual void cleanup();
 
+		virtual int exec(const std::string &s);
+
 		virtual MDatabaseHandle *insert(const char *tableName, std::map<std::string, std::string> vars);
 
 		virtual bool update(const char *tableName, std::map<std::string, std::string> find, std::map<std::string, std::string> vars);
