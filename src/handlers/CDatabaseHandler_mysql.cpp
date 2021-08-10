@@ -159,8 +159,8 @@ bool CDatabaseTransaction::query(const std::string &s, void(*callback)(const DBR
 					callback(result, param);
 			}
 			mysql_free_result(res);
-			return true;			
 		}
+		return true;
  	}
 	else
 		fprintf(stderr, "QUERY ERROR: %s\n", s.c_str());
