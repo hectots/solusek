@@ -7,6 +7,7 @@
 #ifndef __M_RESPONSE_INCLUDED__
 #define __M_RESPONSE_INCLUDED__
 #include "MCookie.h"
+#include <map>
 #include <string>
 #include <vector>
 
@@ -20,7 +21,8 @@ namespace solusek
 
 		int Code;
 		std::string Body, ContentType, Date, SID, Location;
-    std::vector<MCookie> Cookies;
+    	std::vector<MCookie> Cookies;
+		std::map<std::string, std::string> Headers;
 
 		std::string getCodeDescription() const
 		{
