@@ -111,6 +111,7 @@ namespace solusek
 	MResponse CClient::runRequest(const std::string& body, bool ignoreResult)
 	{
 		std::string contentType("application/json"), location;
+		std::map<std::string, std::string> headers;
 		int port = 80;
 
 		std::size_t n1 = Endpoint.find("://");
@@ -291,8 +292,6 @@ namespace solusek
 
 			if(!ignoreResult)
 			{
-
-				std::map<std::string, std::string> headers;
 				char retBuf[2];
 				int ex = 0;
 				std::string line;
@@ -450,6 +449,7 @@ namespace solusek
 		MResponse ret(code, resp);
 		ret.ContentType = contentType;
 		ret.Location = location;
+		ret.Headers = headers;
 		return ret;
 	}
 }
