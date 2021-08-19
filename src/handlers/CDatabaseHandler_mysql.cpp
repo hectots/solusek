@@ -7,6 +7,7 @@
 #ifdef USE_MYSQL
 #pragma message "Using MySQL"
 #include "CDatabaseHandler.h"
+#include <stdexcept>
 
 CDatabaseResource::CDatabaseResource(void *resource, const std::string& id)
 {
