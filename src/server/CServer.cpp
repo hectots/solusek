@@ -74,7 +74,7 @@ namespace solusek
 		}
 		if (Database)
 			delete Database;
-		OPENSSL_cleanup();
+		// OPENSSL_cleanup();
 	}
 
 	void CServer::addDefaultMimeTypes()

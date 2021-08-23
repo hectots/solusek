@@ -72,7 +72,7 @@ void CNetHandlerSocket::setupSSL(bool re)
 	if(!bThreadSetup)
 		thread_setup();
 
-	CTX = SSL_CTX_new(TLS_method());
+	CTX = SSL_CTX_new(TLSv1_2_method());
   	SSL_CTX_set_session_id_context(CTX, (const unsigned char *)&ssl_session_ctx_id, sizeof(ssl_session_ctx_id));
   	ChildCTX = 0;
 
