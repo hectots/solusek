@@ -32,14 +32,17 @@ FILE(GLOB SRCS "src/*.cpp" "src/*.c" "src/handlers/*.cpp" "src/server/*.cpp" "sr
 ## Define the executable
 add_library(${PROJECT_NAME} SHARED ${SRCS})
 
+find_package(OpenSSL REQUIRED)
 
-target_link_libraries(${PROJECT_NAME} ssl crypto)
+target_link_libraries(${PROJECT_NAME} OpenSSL::SSL OpenSSL::Crypto)
 
 if(USE_MYSQL)
-  target_link_libraries(${PROJECT_NAME} mysqlclient)
+  find_package(unofficial-libmariadb CONFIG REQUIRED)
+  target_link_libraries(${PROJECT_NAME} libmariadb mariadbclient)
 endif()
 if(USE_PQXX)
-  target_link_libraries(${PROJECT_NAME} pqxx)
+  find_package(libpqxx CONFIG REQUIRED)
+  target_link_libraries(${PROJECT_NAME} libpqxx::pqxx)
 endif()
 
 install(TARGETS ${PROJECT_NAME}
