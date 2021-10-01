@@ -79,8 +79,11 @@ bool CDatabaseHandler::open()
 		return false;
 
   	if(!mysql_real_connect(C, host.c_str(), username.c_str(), password.c_str(), NULL, 0, NULL, 0))
-		return false;
-
+	{
+		mysql_options(C, MYSQL_OPT_PROTOCOL, (void *)mysql_protocol_type::MYSQL_PROTOCOL_TCP);
+		if(!mysql_real_connect(C, host.c_str(), username.c_str(), password.c_str(), NULL, 0, NULL, 0))
+			return false;
+	}
 
 	if(mysql_select_db(C, dbname.c_str()) != 0)
 		return false;
