@@ -80,7 +80,8 @@ bool CDatabaseHandler::open()
 
   	if(!mysql_real_connect(C, host.c_str(), username.c_str(), password.c_str(), NULL, 0, NULL, 0))
 	{
-		mysql_options(C, MYSQL_OPT_PROTOCOL, (void *)mysql_protocol_type::MYSQL_PROTOCOL_TCP);
+		enum mysql_protocol_type prot_type = MYSQL_PROTOCOL_TCP;
+		mysql_options(C, MYSQL_OPT_PROTOCOL, (void *)&prot_type);
 		if(!mysql_real_connect(C, host.c_str(), username.c_str(), password.c_str(), NULL, 0, NULL, 0))
 			return false;
 	}
